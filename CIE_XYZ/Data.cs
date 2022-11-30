@@ -10,18 +10,22 @@ namespace CIE_XYZ
     public class Data
     {
         private int waveLength;
-        private double X;
-        private double Y;
-        private double Z;
+        private double x;
+        private double y;
+        private double z;
 
         public static int epsilon = 10;
+
+        public double X { get => x; set => x = value; }
+        public double Y { get => y; set => y = value; }
+        public double Z { get => z; set => z = value; }
 
         public Data(int waveLength, double x, double y, double z)
         {
             this.waveLength = waveLength;
-            X = x;
-            Y = y;
-            Z = z;
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
 
         public static List<Data> ReadData(string filename)
@@ -36,23 +40,29 @@ namespace CIE_XYZ
             return data;
         }
 
-        public void PlotDataPoint(Plot plot)
+        public void PlotDataPoint(Plot plot, bool useFixedColor)
         {
             try
             {
+                if(useFixedColor)
+                {
+                    plot.DrawPoint(x / (x + y + z), y / (x + y + z), Color.Red, true);
+                    return;
+                }
+                
                 var color = GetPointColor();
                 if (color.R <= epsilon && color.G <= epsilon && color.B <= epsilon)
                     return;
-                plot.DrawPoint(X / (X + Y + Z), Y / (X + Y + Z), color);
+                plot.DrawPoint(x / (x + y + z), y / (x + y + z), color, false);
             }
             catch (Exception) { }
         }
 
         public Color GetPointColor()
         {
-            int R = (int)Math.Max(Math.Round((3.2404542 * X - 1.5371385 * Y - 0.4985314 * Z) * 255, 0), 0);
-            int G = (int)Math.Max(Math.Round((-0.969266 * X + 1.8760108 * Y + 0.0415560 * Z) * 255, 0), 0);
-            int B = (int)Math.Max(Math.Round((0.0556434 * X - 0.2040259 * Y + 1.0572252 * Z) * 255, 0), 0);
+            int R = (int)Math.Max(Math.Round((3.2404542 * x - 1.5371385 * y - 0.4985314 * z) * 255, 0), 0);
+            int G = (int)Math.Max(Math.Round((-0.969266 * x + 1.8760108 * y + 0.0415560 * z) * 255, 0), 0);
+            int B = (int)Math.Max(Math.Round((0.0556434 * x - 0.2040259 * y + 1.0572252 * z) * 255, 0), 0);
             return Color.FromArgb(Math.Min(R, 255), Math.Min(G, 255), Math.Min(B, 255));
         }
 

@@ -22,7 +22,7 @@ namespace CIE_XYZ
         private int axis_start = 20;
         private int radius = 8;
         private int curve_radius = 4;
-        private int bullet_radius = 12;
+        private int bullet_radius = 14;
         Pen pen = new Pen(Color.Black, 2);
         SolidBrush brush = new SolidBrush(Color.Black);
 
@@ -79,12 +79,13 @@ namespace CIE_XYZ
             canvas.Refresh();
         }
 
-        public void DrawPoint(double ptx, double pty, Color color)
+        public void DrawPoint(double ptx, double pty, Color color, bool useBigPoint)
         {
+            int local_radius = useBigPoint ? bullet_radius : radius;
             using (Graphics g = Graphics.FromImage(bmap))
             {
                 var pt = MapPointToGraph(ptx, pty);
-                g.FillEllipse(new SolidBrush(color), pt.X - radius, pt.Y - radius, radius, radius);
+                g.FillEllipse(new SolidBrush(color), pt.X - local_radius, pt.Y - local_radius, local_radius, local_radius);
             }
             canvas.Image = bmap;
             canvas.Refresh();
@@ -112,11 +113,19 @@ namespace CIE_XYZ
             canvas.Image = bmap;
             canvas.Refresh();
         }
+
         public Point MapPointToGraph(double ptx, double pty)
         {
             int mappedX = (int)((ptx - xmin) / (xmax - xmin) * CANVAS_WIDTH);
             int mappedY = CANVAS_HEIGHT - (int)((pty - ymin) / (ymax - ymin) * CANVAS_HEIGHT);
             return new Point(2 * axis_start + mappedX, mappedY - 2 * axis_start);
+        }
+
+        public (double x, double y) MapGraphPointToPoint(Point pt)
+        {
+            double realX = (xmax - xmin) / CANVAS_WIDTH * ((double)pt.X - 2 * axis_start) + xmin;
+            double realY = (ymin - ymax) * ((double)pt.Y + 2 * axis_start - CANVAS_HEIGHT) / CANVAS_HEIGHT - ymin;
+            return (realX, realY);
         }
     }
 }

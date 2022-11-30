@@ -10,6 +10,9 @@ namespace CIE_XYZ
 {
     public class BezierCurve    
     {
+        public static int MIN_VAL = 380;
+        public static int MAX_VAL = 780;
+
         private static double[] factorials = new double[]
         {
             1.0,
@@ -89,6 +92,26 @@ namespace CIE_XYZ
 
             return p;
         }
+
+        public Data FindRelatedPoint(List<Data> data)
+        {
+            var pts = this.GetCurve((double)1/(MAX_VAL - MIN_VAL));
+            double X = 0.0;
+            double Y = 0.0;
+            double Z = 0.0;
+            int delta = MAX_VAL - MIN_VAL;
+
+            for (int i = 0; i <= delta; ++i)
+            {
+                var bezierValue = plot.MapGraphPointToPoint(pts[i]).y;
+                X += bezierValue * data[i].X;
+                Y += bezierValue * data[i].Y;
+                Z += bezierValue * data[i].Z;
+            }
+
+            return new Data(2137, X, Y, Z);
+        }
+
 
         private static double binomial(int n, int i)
         {
