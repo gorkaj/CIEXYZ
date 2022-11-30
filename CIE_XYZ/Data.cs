@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace CIE_XYZ
         private double X;
         private double Y;
         private double Z;
+
+        public static int epsilon = 10;
 
         public Data(int waveLength, double x, double y, double z)
         {
@@ -37,26 +40,21 @@ namespace CIE_XYZ
         {
             try
             {
-                plot.DrawPoint(X / (X + Y + Z), Y / (X + Y + Z), Color.Aquamarine);
+                var color = GetPointColor();
+                if (color.R <= epsilon && color.G <= epsilon && color.B <= epsilon)
+                    return;
+                plot.DrawPoint(X / (X + Y + Z), Y / (X + Y + Z), color);
             }
             catch (Exception) { }
         }
 
         public Color GetPointColor()
         {
-            int R = (int)Math.Round(Adj(3.2404542 * X - 1.5371385 * Y - 0.4985314 * Z), 0);
-            int G = (int)Math.Round(Adj(-0.969266 * X + 1.8760108 * Y + 0.0415560 * Z), 0);
-            int B = (int)Math.Round(Adj(0.0556434 * X - 0.2040259 * Y + 1.0572252 * Z), 0);
-            return Color.FromArgb(Math.Max(R, 255), Math.Max(G, 255), Math.Max(B, 255));
+            int R = (int)Math.Max(Math.Round((3.2404542 * X - 1.5371385 * Y - 0.4985314 * Z) * 255, 0), 0);
+            int G = (int)Math.Max(Math.Round((-0.969266 * X + 1.8760108 * Y + 0.0415560 * Z) * 255, 0), 0);
+            int B = (int)Math.Max(Math.Round((0.0556434 * X - 0.2040259 * Y + 1.0572252 * Z) * 255, 0), 0);
+            return Color.FromArgb(Math.Min(R, 255), Math.Min(G, 255), Math.Min(B, 255));
         }
 
-        private double Adj(double C)
-        {
-            if (Math.Abs(C) < 0.0031308)
-            {
-                return 12.92 * C;
-            }
-            return 1.055 * Math.Pow(C, 0.41666) - 0.055;
-        }
     }
 }

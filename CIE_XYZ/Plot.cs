@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace CIE_XYZ
 
         private int axis_start = 20;
         private int radius = 8;
+        private int curve_radius = 4;
+        private int bullet_radius = 12;
         Pen pen = new Pen(Color.Black, 2);
         SolidBrush brush = new SolidBrush(Color.Black);
 
@@ -87,6 +90,28 @@ namespace CIE_XYZ
             canvas.Refresh();
         }
 
+        public void DrawRawPoint(Point pt, Color color)
+        {
+            using (Graphics g = Graphics.FromImage(bmap))
+            {
+                g.FillEllipse(new SolidBrush(color), pt.X - bullet_radius, pt.Y - bullet_radius, bullet_radius, bullet_radius);
+            }
+            canvas.Image = bmap;
+            canvas.Refresh();
+        }
+
+        public void DrawCurve(List<Point> points)
+        {
+            using (Graphics g = Graphics.FromImage(bmap))
+            {
+                foreach (var pt in points)
+                {
+                    g.FillEllipse(new SolidBrush(Color.Black), pt.X - curve_radius, pt.Y - curve_radius, curve_radius, curve_radius);
+                }
+            }
+            canvas.Image = bmap;
+            canvas.Refresh();
+        }
         public Point MapPointToGraph(double ptx, double pty)
         {
             int mappedX = (int)((ptx - xmin) / (xmax - xmin) * CANVAS_WIDTH);
