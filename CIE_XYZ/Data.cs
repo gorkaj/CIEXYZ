@@ -13,6 +13,7 @@ namespace CIE_XYZ
         private double x;
         private double y;
         private double z;
+        private Color color;
 
         public static int epsilon = 10;
 
@@ -37,6 +38,12 @@ namespace CIE_XYZ
                 var divisions = line.Split("\t");
                 data.Add(new Data(Int32.Parse(divisions[0]), Double.Parse(divisions[1]), Double.Parse(divisions[2]), Double.Parse(divisions[3])));
             }
+
+            foreach(var el in data)
+            {
+                el.color = el.GetPointColor();
+            }
+
             return data;
         }
 
@@ -46,14 +53,13 @@ namespace CIE_XYZ
             {
                 if(useFixedColor)
                 {
-                    plot.DrawPoint(x / (x + y + z), y / (x + y + z), Color.Red, true);
+                    plot.DrawPoint(x / (x + y + z), y / (x + y + z), Color.Black, true);
                     return;
                 }
                 
-                var color = GetPointColor();
                 if (color.R <= epsilon && color.G <= epsilon && color.B <= epsilon)
                     return;
-                plot.DrawPoint(x / (x + y + z), y / (x + y + z), color, false);
+                plot.DrawPoint(x / (x + y + z), y / (x + y + z), this.color, false);
             }
             catch (Exception) { }
         }

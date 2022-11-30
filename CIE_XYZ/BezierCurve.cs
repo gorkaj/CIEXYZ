@@ -36,6 +36,8 @@ namespace CIE_XYZ
         private List<Point> controlPoints;
         private Plot plot;
 
+        public List<Point> ControlPoints { get => controlPoints; set => controlPoints = value; }
+
         public BezierCurve(List<Point> controlPoints, Plot plot)
         {
             this.controlPoints = controlPoints;
@@ -130,6 +132,17 @@ namespace CIE_XYZ
 
             double basis = binomial(n, i) * t_i * t_n_minus_i;
             return basis;
+        }
+
+        public int Snap(Point click)
+        {
+            for (int i = 0; i < controlPoints.Count; ++i)
+            {
+                var dist = Vector2.Distance(new Vector2(controlPoints[i].X, controlPoints[i].Y), new Vector2(click.X, click.Y));
+                if (dist <= 15)
+                    return i;
+            }
+            return -1;
         }
     }
 }

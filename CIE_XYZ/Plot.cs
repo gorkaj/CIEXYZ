@@ -41,7 +41,7 @@ namespace CIE_XYZ
 
         public void DrawAxis()
         {
-
+            this.bmap = new Bitmap(bmap.Width, bmap.Height);
             using (Graphics g = Graphics.FromImage(bmap))
             {
                 // axis
@@ -76,7 +76,14 @@ namespace CIE_XYZ
             }
 
             canvas.Image = bmap;
-            canvas.Refresh();
+        }
+
+        public void PlotDataPoints(List<Data> dataPoints)
+        {
+            foreach (var dpoint in dataPoints)
+            {
+                dpoint.PlotDataPoint(this, false);
+            }
         }
 
         public void DrawPoint(double ptx, double pty, Color color, bool useBigPoint)
@@ -88,7 +95,6 @@ namespace CIE_XYZ
                 g.FillEllipse(new SolidBrush(color), pt.X - local_radius, pt.Y - local_radius, local_radius, local_radius);
             }
             canvas.Image = bmap;
-            canvas.Refresh();
         }
 
         public void DrawRawPoint(Point pt, Color color)
@@ -98,7 +104,6 @@ namespace CIE_XYZ
                 g.FillEllipse(new SolidBrush(color), pt.X - bullet_radius, pt.Y - bullet_radius, bullet_radius, bullet_radius);
             }
             canvas.Image = bmap;
-            canvas.Refresh();
         }
 
         public void DrawCurve(List<Point> points)
@@ -111,7 +116,6 @@ namespace CIE_XYZ
                 }
             }
             canvas.Image = bmap;
-            canvas.Refresh();
         }
 
         public Point MapPointToGraph(double ptx, double pty)
