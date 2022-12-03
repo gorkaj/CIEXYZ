@@ -20,6 +20,7 @@ namespace CIE_XYZ
         public double X { get => x; set => x = value; }
         public double Y { get => y; set => y = value; }
         public double Z { get => z; set => z = value; }
+        public Color Color { get => color; set => color = value; }
 
         public Data(int waveLength, double x, double y, double z)
         {
@@ -27,6 +28,7 @@ namespace CIE_XYZ
             this.x = x;
             this.y = y;
             this.z = z;
+            this.color = GetPointColor();
         }
 
         public static List<Data> ReadData(string filename)
@@ -37,11 +39,6 @@ namespace CIE_XYZ
             {
                 var divisions = line.Split("\t");
                 data.Add(new Data(Int32.Parse(divisions[0]), Double.Parse(divisions[1]), Double.Parse(divisions[2]), Double.Parse(divisions[3])));
-            }
-
-            foreach(var el in data)
-            {
-                el.color = el.GetPointColor();
             }
 
             return data;

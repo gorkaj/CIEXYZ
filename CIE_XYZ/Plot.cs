@@ -21,7 +21,7 @@ namespace CIE_XYZ
 
         private int axis_start = 20;
         private int radius = 8;
-        private int curve_radius = 4;
+        private int curve_radius = 3;
         private int bullet_radius = 14;
         Pen pen = new Pen(Color.Black, 2);
         SolidBrush brush = new SolidBrush(Color.Black);
@@ -106,13 +106,33 @@ namespace CIE_XYZ
             canvas.Image = bmap;
         }
 
+        public void DrawRawLine(List<Point> pts, Color color)
+        {
+            using (Graphics g = Graphics.FromImage(bmap))
+            {
+                for (int i = 0; i < pts.Count - 1; ++i)
+                {
+                    g.DrawLine(new Pen(color, 1),
+                        new Point(pts[i].X - radius, pts[i].Y - radius),
+                        new Point(pts[i + 1].X - radius, pts[i + 1].Y - radius));
+                }
+            }
+            canvas.Image = bmap;
+        }
+
         public void DrawCurve(List<Point> points)
         {
             using (Graphics g = Graphics.FromImage(bmap))
             {
-                foreach (var pt in points)
+                //foreach (var pt in points)
+                //{
+                //    g.FillEllipse(new SolidBrush(Color.Black), pt.X - curve_radius, pt.Y - curve_radius, curve_radius, curve_radius);
+                //}
+                for (int i = 0; i < points.Count - 1; ++i)
                 {
-                    g.FillEllipse(new SolidBrush(Color.Black), pt.X - curve_radius, pt.Y - curve_radius, curve_radius, curve_radius);
+                    g.DrawLine(new Pen(Color.Black, 2),
+                        new Point(points[i].X - radius, points[i].Y - radius),
+                        new Point(points[i + 1].X - radius, points[i + 1].Y - radius));
                 }
             }
             canvas.Image = bmap;

@@ -10,16 +10,16 @@ namespace CIE_XYZ
 
         private string DATA_PATH = "../../../data.txt";
         public static int CANVAS_WIDTH = 644;
-        public static int CANVAS_HEIGHT = 604;
+        public static int CANVAS_HEIGHT = 677;
 
         public Main()
         {
             InitializeComponent();
-            spectralPlot = new Plot(this.spectrumCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), 340, 860, 0, 2.15, 12, 0, 1);
+            spectralPlot = new Plot(this.spectrumCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), 340, 860, -1.5, 6.0, 14, 0, 1);
             horseshoePlot = new Plot(this.horseshoeCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), -0.1, 1.0, -0.1, 1.0, 12, 1, 1);
             dataPoints = Data.ReadData(DATA_PATH);
             movingVertex = -1;
-
+            colorPanel.BackColor = SystemColors.Control;
 
             List<Point> pts = new()
             {
@@ -39,6 +39,7 @@ namespace CIE_XYZ
             horseshoePlot.PlotDataPoints(dataPoints);
             bezier.Draw();
             var pointFromSpectrum = bezier.FindRelatedPoint(dataPoints);
+            colorPanel.BackColor = pointFromSpectrum.Color;
             pointFromSpectrum.PlotDataPoint(horseshoePlot, true);
         }
 
@@ -49,12 +50,14 @@ namespace CIE_XYZ
 
             if (M < N)
             {
-                bezier.ControlPoints.RemoveAt(N - 2);
+                while(M < bezier.ControlPoints.Count)
+                    bezier.ControlPoints.RemoveAt(bezier.ControlPoints.Count - 2);
             }
             else
             {
                 Random r = new();
-                bezier.ControlPoints.Insert(N - 1, new Point(r.Next(50, CANVAS_WIDTH - 50), r.Next(50, CANVAS_HEIGHT - 50)));
+                while(M > bezier.ControlPoints.Count)
+                    bezier.ControlPoints.Insert(bezier.ControlPoints.Count - 1, new Point(r.Next(50, CANVAS_WIDTH - 50), r.Next(50, CANVAS_HEIGHT - 50)));
             }
             Redraw();
         }

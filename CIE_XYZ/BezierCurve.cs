@@ -49,11 +49,12 @@ namespace CIE_XYZ
             plot.DrawCurve(this.GetCurve());
             foreach (var pt in controlPoints)
             {
-                plot.DrawRawPoint(pt, Color.Magenta);
+                plot.DrawRawPoint(pt, Color.DarkBlue);
             }
+            plot.DrawRawLine(controlPoints, Color.DarkBlue);
         }
 
-        public List<Point> GetCurve(double interval = 0.001)
+        public List<Point> GetCurve(double interval = 0.01)
         {
             int N = controlPoints.Count - 1;
             if (N > 16)
@@ -110,8 +111,8 @@ namespace CIE_XYZ
                 Y += bezierValue * data[i].Y;
                 Z += bezierValue * data[i].Z;
             }
-
-            return new Data(2137, X, Y, Z);
+            var sum = X + Y + Z;
+            return new Data(2137, X / sum, Y / sum, Z / sum);
         }
 
 
