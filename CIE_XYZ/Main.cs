@@ -61,9 +61,14 @@ namespace CIE_XYZ
             else
             {
                 Random r = new();
-                while(M > bezier.ControlPoints.Count)
-                    bezier.ControlPoints.Insert(bezier.ControlPoints.Count - 1, new Point(r.Next(50, CANVAS_WIDTH - 50), r.Next(50, CANVAS_HEIGHT - 50)));
+                while (M > bezier.ControlPoints.Count)
+                {
+                    var prev = bezier.ControlPoints[bezier.ControlPoints.Count - 2];
+                    var next = bezier.ControlPoints[bezier.ControlPoints.Count - 1];
+                    bezier.ControlPoints.Insert(bezier.ControlPoints.Count - 1, new Point(r.Next(prev.X, next.X), r.Next(50, CANVAS_HEIGHT - 50)));
+                }
             }
+                   
             Redraw();
         }
 
@@ -76,8 +81,35 @@ namespace CIE_XYZ
         {
             if (movingVertex == -1)
                 return;
-            bezier.ControlPoints[movingVertex] = new Point(e.X, e.Y);
-            Redraw();
+            var prev = movingVertex - 1;
+            var next = movingVertex + 1;
+
+            if(movingVertex == 0)
+            {
+                if (bezier.ControlPoints[next].X > e.X)
+                {
+                    bezier.ControlPoints[movingVertex] = new Point(e.X, e.Y);
+                    Redraw();
+                }
+                return;
+            }
+
+            if(movingVertex == bezier.ControlPoints.Count - 1)
+            {
+                if (bezier.ControlPoints[prev].X < e.X)
+                {
+                    bezier.ControlPoints[movingVertex] = new Point(e.X, e.Y);
+                    Redraw();
+                }
+                return;
+            }
+
+            if (bezier.ControlPoints[prev].X < e.X && bezier.ControlPoints[next].X > e.X)
+            {
+                bezier.ControlPoints[movingVertex] = new Point(e.X, e.Y);
+                Redraw();
+            }
+
         }
 
         private void spectrumCanvas_MouseUp(object sender, MouseEventArgs e)
