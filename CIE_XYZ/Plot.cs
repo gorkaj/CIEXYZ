@@ -18,15 +18,18 @@ namespace CIE_XYZ
         private int k;
         private int x_precision;
         private int y_precision;
+        private Bitmap? background;
 
         private int axis_start = 20;
         private int radius = 8;
-        private int curve_radius = 3;
         private int bullet_radius = 14;
         Pen pen = new Pen(Color.Black, 2);
         SolidBrush brush = new SolidBrush(Color.Black);
 
-        public Plot(PictureBox canvas, Bitmap bmap, double xmin, double xmax, double ymin, double ymax, int k, int precision, int y_precision)
+        public Bitmap Bmap { get => bmap; set => bmap = value; }
+        public PictureBox Canvas { get => canvas; set => canvas = value; }
+
+        public Plot(PictureBox canvas, Bitmap bmap, double xmin, double xmax, double ymin, double ymax, int k, int precision, int y_precision, Bitmap? background)
         {
             this.canvas = canvas;
             this.bmap = bmap;
@@ -37,11 +40,20 @@ namespace CIE_XYZ
             this.k = k;
             this.x_precision = precision;
             this.y_precision = y_precision;
+            this.background = background;
         }
 
         public void DrawAxis()
         {
             this.bmap = new Bitmap(bmap.Width, bmap.Height);
+            if (background != null)
+            {
+                using (Graphics g = Graphics.FromImage(Bmap))
+                {
+                    g.DrawImage(background, new Point(90, 45));
+                }   
+            }
+
             using (Graphics g = Graphics.FromImage(bmap))
             {
                 // axis
@@ -124,10 +136,6 @@ namespace CIE_XYZ
         {
             using (Graphics g = Graphics.FromImage(bmap))
             {
-                //foreach (var pt in points)
-                //{
-                //    g.FillEllipse(new SolidBrush(Color.Black), pt.X - curve_radius, pt.Y - curve_radius, curve_radius, curve_radius);
-                //}
                 for (int i = 0; i < points.Count - 1; ++i)
                 {
                     g.DrawLine(new Pen(Color.Black, 2),
@@ -148,7 +156,7 @@ namespace CIE_XYZ
         public (double x, double y) MapGraphPointToPoint(Point pt)
         {
             double realX = (xmax - xmin) / CANVAS_WIDTH * ((double)pt.X - 2 * axis_start) + xmin;
-            double realY = (ymin - ymax) * ((double)pt.Y + 2 * axis_start - CANVAS_HEIGHT) / CANVAS_HEIGHT - ymin;
+            double realY = (ymax - ymin) * (CANVAS_HEIGHT - 2 * axis_start - (double)pt.Y) / CANVAS_HEIGHT + ymin;
             return (realX, realY);
         }
     }

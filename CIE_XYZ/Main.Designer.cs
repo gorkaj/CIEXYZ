@@ -34,12 +34,15 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.numOfPoints = new System.Windows.Forms.NumericUpDown();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.colorPanel = new System.Windows.Forms.Panel();
+            this.backgroundBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spectrumCanvas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.horseshoeCanvas)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numOfPoints)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -50,7 +53,7 @@
             this.tableLayoutPanel1.Controls.Add(this.spectrumCanvas, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.horseshoeCanvas, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.colorPanel, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -62,6 +65,7 @@
             // 
             // spectrumCanvas
             // 
+            this.spectrumCanvas.BackColor = System.Drawing.Color.White;
             this.spectrumCanvas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spectrumCanvas.Location = new System.Drawing.Point(3, 78);
             this.spectrumCanvas.Name = "spectrumCanvas";
@@ -74,6 +78,7 @@
             // 
             // horseshoeCanvas
             // 
+            this.horseshoeCanvas.BackColor = System.Drawing.Color.White;
             this.horseshoeCanvas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.horseshoeCanvas.Location = new System.Drawing.Point(653, 78);
             this.horseshoeCanvas.Name = "horseshoeCanvas";
@@ -123,13 +128,35 @@
             0});
             this.numOfPoints.ValueChanged += new System.EventHandler(this.numOfPoints_ValueChanged);
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.backgroundBox);
+            this.panel2.Controls.Add(this.colorPanel);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(653, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(644, 69);
+            this.panel2.TabIndex = 4;
+            // 
             // colorPanel
             // 
-            this.colorPanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.colorPanel.Location = new System.Drawing.Point(1235, 3);
+            this.colorPanel.Location = new System.Drawing.Point(573, 3);
             this.colorPanel.Name = "colorPanel";
             this.colorPanel.Size = new System.Drawing.Size(62, 69);
             this.colorPanel.TabIndex = 4;
+            // 
+            // backgroundBox
+            // 
+            this.backgroundBox.AutoSize = true;
+            this.backgroundBox.Checked = true;
+            this.backgroundBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.backgroundBox.Location = new System.Drawing.Point(15, 13);
+            this.backgroundBox.Name = "backgroundBox";
+            this.backgroundBox.Size = new System.Drawing.Size(150, 24);
+            this.backgroundBox.TabIndex = 5;
+            this.backgroundBox.Text = "Show background";
+            this.backgroundBox.UseVisualStyleBackColor = true;
+            this.backgroundBox.CheckedChanged += new System.EventHandler(this.backgroundBox_CheckedChanged);
             // 
             // Main
             // 
@@ -148,6 +175,8 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numOfPoints)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -161,5 +190,7 @@
         private Panel panel1;
         private Label label1;
         private Panel colorPanel;
+        private Panel panel2;
+        private CheckBox backgroundBox;
     }
 }

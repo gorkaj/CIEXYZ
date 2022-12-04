@@ -1,3 +1,5 @@
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
+
 namespace CIE_XYZ
 {
     public partial class Main : Form
@@ -9,14 +11,17 @@ namespace CIE_XYZ
         private int movingVertex;
 
         private string DATA_PATH = "../../../data.txt";
+        public static string IMG_PATH = "../../../background.jpg";
         public static int CANVAS_WIDTH = 644;
         public static int CANVAS_HEIGHT = 677;
 
         public Main()
         {
             InitializeComponent();
-            spectralPlot = new Plot(this.spectrumCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), 340, 860, -1.5, 6.0, 14, 0, 1);
-            horseshoePlot = new Plot(this.horseshoeCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), -0.1, 1.0, -0.1, 1.0, 12, 1, 1);
+            Bitmap background = new Bitmap(Main.IMG_PATH);
+            background = new Bitmap(background, new Size((int)(Main.CANVAS_WIDTH * 0.7), (int)(Main.CANVAS_HEIGHT * 0.79)));
+            spectralPlot = new Plot(this.spectrumCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), 340, 860, 0.0, 6.0, 12, 0, 1, null);
+            horseshoePlot = new Plot(this.horseshoeCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), -0.1, 1.0, -0.1, 1.0, 12, 1, 1, background);
             dataPoints = Data.ReadData(DATA_PATH);
             movingVertex = -1;
             colorPanel.BackColor = SystemColors.Control;
@@ -78,6 +83,21 @@ namespace CIE_XYZ
         private void spectrumCanvas_MouseUp(object sender, MouseEventArgs e)
         {
             movingVertex = -1;
+        }
+
+        private void backgroundBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if(backgroundBox.Checked)
+            {
+                Bitmap background = new Bitmap(Main.IMG_PATH);
+                background = new Bitmap(background, new Size((int)(Main.CANVAS_WIDTH * 0.7), (int)(Main.CANVAS_HEIGHT * 0.79)));
+                horseshoePlot = new Plot(this.horseshoeCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), -0.1, 1.0, -0.1, 1.0, 12, 1, 1, background);
+            }
+            else
+            {
+                horseshoePlot = new Plot(this.horseshoeCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), -0.1, 1.0, -0.1, 1.0, 12, 1, 1, null);
+            }
+            Redraw();
         }
     }
 }

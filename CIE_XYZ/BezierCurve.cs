@@ -98,21 +98,22 @@ namespace CIE_XYZ
 
         public Data FindRelatedPoint(List<Data> data)
         {
-            var pts = this.GetCurve((double)1/(MAX_VAL - MIN_VAL));
+            int delta = controlPoints[^1].X - controlPoints[0].X;
+            var pts = this.GetCurve((double)1/delta);
             double X = 0.0;
             double Y = 0.0;
             double Z = 0.0;
-            int delta = MAX_VAL - MIN_VAL;
 
             for (int i = 0; i <= delta; ++i)
             {
                 var bezierValue = plot.MapGraphPointToPoint(pts[i]).y;
-                X += bezierValue * data[i].X;
-                Y += bezierValue * data[i].Y;
-                Z += bezierValue * data[i].Z;
+                var waveLength = (int)Math.Min(Math.Max(plot.MapGraphPointToPoint(pts[i]).x, 380), 779);
+                X += bezierValue * data[waveLength - 380].X;
+                Y += bezierValue * data[waveLength - 380].Y;
+                Z += bezierValue * data[waveLength - 380].Z;
             }
-            var sum = X + Y + Z;
-            return new Data(2137, X / sum, Y / sum, Z / sum);
+            //var sum = X + Y + Z;
+            return new Data(2137, X / delta, Y / delta, Z / delta);
         }
 
 
