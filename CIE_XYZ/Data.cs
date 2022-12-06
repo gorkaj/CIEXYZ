@@ -21,6 +21,7 @@ namespace CIE_XYZ
         public double Y { get => y; set => y = value; }
         public double Z { get => z; set => z = value; }
         public Color Color { get => color; set => color = value; }
+        public int WaveLength { get => waveLength; set => waveLength = value; }
 
         public Data(int waveLength, double x, double y, double z)
         {

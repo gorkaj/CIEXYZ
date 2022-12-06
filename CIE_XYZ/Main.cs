@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace CIE_XYZ
@@ -28,7 +30,7 @@ namespace CIE_XYZ
 
             List<Point> pts = new()
             {
-                spectralPlot.MapPointToGraph(BezierCurve.MIN_VAL, 1.5),
+                spectralPlot.MapPointToGraph(BezierCurve.MIN_VAL, 3.5),
                 spectralPlot.MapPointToGraph(510, 0.2),
                 spectralPlot.MapPointToGraph(590, 1.2),
                 spectralPlot.MapPointToGraph(BezierCurve.MAX_VAL, 0.4)
@@ -42,7 +44,14 @@ namespace CIE_XYZ
             spectralPlot.DrawAxis();
             horseshoePlot.DrawAxis();
             horseshoePlot.PlotDataPoints(dataPoints);
-            bezier.Draw();
+            if(!showFuncCheckbox.Checked)
+            {
+                bezier.Draw();
+            }
+            else
+            {
+                spectralPlot.DrawFunctions(dataPoints);
+            }
             var pointFromSpectrum = bezier.FindRelatedPoint(dataPoints);
             colorPanel.BackColor = pointFromSpectrum.Color;
             pointFromSpectrum.PlotDataPoint(horseshoePlot, true);
@@ -130,6 +139,59 @@ namespace CIE_XYZ
                 horseshoePlot = new Plot(this.horseshoeCanvas, new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT), -0.1, 1.0, -0.1, 1.0, 12, 1, 1, null);
             }
             Redraw();
+        }
+
+        private void evenSpectrumBtn_Click(object sender, EventArgs e)
+        {
+            bezier.ControlPoints = new List<Point>() { spectralPlot.MapPointToGraph(BezierCurve.MIN_VAL, 4.0),
+                                                       spectralPlot.MapPointToGraph(BezierCurve.MAX_VAL, 4.0) };
+            numOfPoints.Value = 2;
+            Redraw();
+        }
+
+        private void showFuncCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            spectralPlot.Bmap = new Bitmap(CANVAS_WIDTH, CANVAS_HEIGHT);
+            Redraw();
+        }
+
+        private void loadBtn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "DAT files|*.dat";
+            dialog.Title = "Load spectrum";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                var lines = System.IO.File.ReadLines(dialog.FileName);
+                bezier.ControlPoints = new List<Point>();
+                foreach(var line in lines)
+                {
+                    var spl = line.Split(" ");
+                    bezier.ControlPoints.Add(new Point(int.Parse(spl[0]), int.Parse(spl[1])));
+                }
+            }
+            Redraw();
+        }
+
+        private void saveBtn_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "DAT files|*.dat";
+            dialog.Title = "Save spectrum";
+            dialog.ShowDialog();
+
+            if (dialog.FileName != "")
+            {
+                TextWriter fs = new StreamWriter(dialog.FileName);
+
+                foreach (var pt in bezier.ControlPoints)
+                {
+                    fs.Write(pt.X.ToString() + " " + pt.Y.ToString() + "\n");
+                }
+
+                fs.Close();
+            }
         }
     }
 }

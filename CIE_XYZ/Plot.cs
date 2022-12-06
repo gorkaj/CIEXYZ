@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -105,6 +106,12 @@ namespace CIE_XYZ
             {
                 var pt = MapPointToGraph(ptx, pty);
                 g.FillEllipse(new SolidBrush(color), pt.X - local_radius, pt.Y - local_radius, local_radius, local_radius);
+                if(useBigPoint)
+                {
+                    Font f = new("Calibri", 10, FontStyle.Regular);
+                    StringFormat sf = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                    g.DrawString("(" + Math.Round(ptx, 2).ToString() + ", " + Math.Round(pty, 2).ToString()  +")", f, brush, new Point(pt.X + 10, pt.Y + 10), sf);
+                }
             }
             canvas.Image = bmap;
         }
@@ -141,6 +148,30 @@ namespace CIE_XYZ
                     g.DrawLine(new Pen(Color.Black, 2),
                         new Point(points[i].X - radius, points[i].Y - radius),
                         new Point(points[i + 1].X - radius, points[i + 1].Y - radius));
+                }
+            }
+            canvas.Image = bmap;
+        }
+
+        public void DrawFunctions(List<Data> dataPoints)
+        {
+            var redPen = new Pen(Color.Red, 2);
+            var greenPen = new Pen(Color.Green, 2);
+            var bluePen = new Pen(Color.Blue, 2);
+
+            using (Graphics g = Graphics.FromImage(bmap))
+            {
+                for (int i = 0; i < dataPoints.Count - 1; ++i)
+                {
+                    g.DrawLine(redPen,
+                        MapPointToGraph(dataPoints[i].WaveLength, dataPoints[i].X),
+                        MapPointToGraph(dataPoints[i + 1].WaveLength, dataPoints[i + 1].X));
+                    g.DrawLine(greenPen,
+                        MapPointToGraph(dataPoints[i].WaveLength, dataPoints[i].Y),
+                        MapPointToGraph(dataPoints[i + 1].WaveLength, dataPoints[i + 1].Y));
+                    g.DrawLine(bluePen,
+                        MapPointToGraph(dataPoints[i].WaveLength, dataPoints[i].Z),
+                        MapPointToGraph(dataPoints[i + 1].WaveLength, dataPoints[i + 1].Z));
                 }
             }
             canvas.Image = bmap;
